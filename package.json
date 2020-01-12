@@ -1,7 +1,7 @@
 {
   "name": "homebridge-camera-ffmpeg-rest-motion",
   "version": "0.1.14",
-  "description": "ffmpeg plugin for homebridge: https://github.com/nfarina/homebridge",
+  "description": "ffmpeg plugin for homebridge with rest api for motion: https://github.com/nfarina/homebridge",
   "license": "ISC",
   "keywords": [
     "homebridge-plugin"
