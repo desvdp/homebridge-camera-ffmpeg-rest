@@ -1,8 +1,10 @@
 # homebridge-camera-ffmpeg-rest-motion 
 
-ffmpeg plugin for [Homebridge](https://github.com/nfarina/homebridge)
+ffmpeg plugin for [Homebridge](https://github.com/nfarina/homebridge) forked from [KhaosT/homebridge-camera-ffmpeg](https://github.com/KhaosT/homebridge-camera-ffmpeg)
 
-With added rest endpoint to trigger motion 
+Changes:
+- Added a rest endpoint to trigger motion
+- removed the button to trigger motion
 
 ## Installation
 
