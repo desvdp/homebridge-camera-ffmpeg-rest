@@ -101,7 +101,7 @@ ffmpegPlatform.prototype.didFinishLaunching = function() {
     });
 
     self.log("Hosting Motion API");
-    apiquick.init(19999,{'rateLimit': {'period': 10,'limit': 5}}); // Max 5 calls in 10
+    apiquick.init(motionAPIport,{'rateLimit': {'period': 10,'limit': 5}}); // Max 5 calls in 10
     apiquick.addEndpoints(self.endpoints);
     
     self.api.publishCameraAccessories("Camera-ffmpeg", configuredAccessories);
