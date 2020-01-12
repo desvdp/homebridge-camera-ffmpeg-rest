@@ -1,3 +1,5 @@
+var apiquick = require('api-quick')
+
 var Accessory, Service, Characteristic, hap, UUIDGen;
 
 var FFMPEG = require('./ffmpeg').FFMPEG;
@@ -37,6 +39,22 @@ ffmpegPlatform.prototype.didFinishLaunching = function() {
   var self = this;
   var videoProcessor = self.config.videoProcessor || 'ffmpeg';
   var interfaceName = self.config.interfaceName || '';
+  
+  var motionAPIport = self.config.motionPort || 19999;
+  
+  self.endpoints = {"motion": {} };
+
+  var motion_cb = function(req) {
+    if(req.method ==='POST'){
+      if (req.body.hasOwnProperty('motion')){
+          try {
+           this.getService(Service.MotionSensor).setCharacteristic(Characteristic.MotionDetected, parseInt(req.body.motion)?1:0);
+          } catch(e) {
+            console.log(e)
+          }
+      }
+    }
+  };
 
   if (self.config.cameras) {
     var configuredAccessories = [];
@@ -68,15 +86,13 @@ ffmpegPlatform.prototype.didFinishLaunching = function() {
       }
 
       cameraAccessory.context.log = self.log;
-      if (cameraConfig.motion) {
-        var button = new Service.Switch(cameraName);
-        cameraAccessory.addService(button);
+      cameraAccessory.context.MotionDetected = false;
 
+      if (cameraConfig.motion) {
         var motion = new Service.MotionSensor(cameraName);
         cameraAccessory.addService(motion);
-
-        button.getCharacteristic(Characteristic.On)
-          .on('set', _Motion.bind(cameraAccessory));
+        
+        self.endpoints.motion[cameraName] = motion_cb.bind(cameraAccessory)
       }
 
       var cameraSource = new FFMPEG(hap, cameraConfig, self.log, videoProcessor, interfaceName);
@@ -84,22 +100,11 @@ ffmpegPlatform.prototype.didFinishLaunching = function() {
       configuredAccessories.push(cameraAccessory);
     });
 
+    self.log("Hosting Motion API");
+    apiquick.init(motionAPIport,{'rateLimit': {'period': 10,'limit': 5}}); // Max 5 calls in 10
+    apiquick.addEndpoints(self.endpoints);
+    
     self.api.publishCameraAccessories("Camera-ffmpeg", configuredAccessories);
   }
 };
 
-function _Motion(on, callback) {
-  this.context.log("Setting %s Motion to %s", this.displayName, on);
-
-  this.getService(Service.MotionSensor).setCharacteristic(Characteristic.MotionDetected, (on ? 1 : 0));
-  if (on) {
-    setTimeout(_Reset.bind(this), 5000);
-  }
-  callback();
-}
-
-function _Reset() {
-  this.context.log("Setting %s Button to false", this.displayName);
-
-  this.getService(Service.Switch).setCharacteristic(Characteristic.On, false);
-}

@@ -1,6 +1,8 @@
-# homebridge-camera-ffmpeg
+# homebridge-camera-ffmpeg-rest-motion 
 
 ffmpeg plugin for [Homebridge](https://github.com/nfarina/homebridge)
+
+With added rest endpoint to trigger motion 
 
 ## Installation
 
@@ -146,6 +148,29 @@ A somewhat complicated example:
     ...
   ]
 }
+```
+
+#### Using the RESTful motion inteface
+
+* `motionPort` sets the port the API will listen in, default is 19999
+
+For each camera with motion enabled, an endpoint will be created  http://<ip_addr>:<motionPort>/motion/<camera_name>, which accepts a JSON payload `{"motion": <"1"|"0"> }`
+    
+##### Example: triggering from HomeAssistant
+
+When using homeassistent, a service can be added to the configuration file like:
+
+```
+rest_command:
+  notify_camera_motion:
+    url: http://<ip>:<port>/motion/{{camera}}
+    method: POST
+    headers:
+      accept: 'application/json, text/html'
+      user-agent: 'Mozilla/5.0 {{ useragent }}'
+    payload: '{"motion": "{{ motion }}" }'
+    content_type:  'application/json; charset=utf-8'
+    verify_ssl: true
 ```
 
 ## Tested configurations
