@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-camera-ffmpeg",
+  "name": "homebridge-camera-ffmpeg-rest-motion",
   "version": "0.1.14",
   "description": "ffmpeg plugin for homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
@@ -8,7 +8,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/KhaosT/homebridge-camera-ffmpeg.git"
+    "url": "git://github.com/desvdp/homebridge-camera-ffmpeg-rest-motion.git"
   },
   "bugs": {
     "url": "http://github.com/KhaosT/homebridge-camera-ffmpeg/issues"
